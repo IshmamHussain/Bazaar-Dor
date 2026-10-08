@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { signUp } from "@/lib/auth-client";
 
 export default function SignUpPage() {
   const [name, setName] = useState("");
@@ -12,19 +13,30 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Mock register logic
-    setTimeout(() => {
-      if (name && email && password.length >= 6) {
-        toast.success("রেজিস্ট্রেশন সফল হয়েছে!");
-        router.push("/signin");
-      } else {
-        toast.error("অনুগ্রহ করে সব তথ্য সঠিকভাবে দিন");
-      }
+    
+    if (password.length < 6) {
+      toast.error("পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে");
       setLoading(false);
-    }, 1000);
+      return;
+    }
+
+    const { error } = await signUp.email({
+      name,
+      email,
+      password,
+    });
+
+    if (error) {
+      toast.error(error.message || "রেজিস্ট্রেশন ব্যর্থ হয়েছে");
+    } else {
+      toast.success("রেজিস্ট্রেশন সফল হয়েছে!");
+      router.push("/signin");
+    }
+    
+    setLoading(false);
   };
 
   const handleSocialLogin = (provider: string) => {

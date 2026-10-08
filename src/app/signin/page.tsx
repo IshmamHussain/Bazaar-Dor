@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { signIn } from "@/lib/auth-client";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
@@ -11,19 +12,23 @@ export default function SignInPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Mock login logic
-    setTimeout(() => {
-      if (email && password.length >= 6) {
-        toast.success("লগইন সফল হয়েছে!");
-        router.push("/");
-      } else {
-        toast.error("ইমেইল বা পাসওয়ার্ড ভুল হয়েছে");
-      }
-      setLoading(false);
-    }, 1000);
+    
+    const { error } = await signIn.email({
+      email,
+      password,
+    });
+    
+    if (error) {
+      toast.error(error.message || "ইমেইল বা পাসওয়ার্ড ভুল হয়েছে");
+    } else {
+      toast.success("লগইন সফল হয়েছে!");
+      router.push("/");
+    }
+    
+    setLoading(false);
   };
 
   const handleSocialLogin = (provider: string) => {

@@ -49,6 +49,7 @@ export default async function Home() {
               src="/bazar-hero.png" 
               alt="Bazar basket" 
               fill
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="object-contain"
               priority
             />

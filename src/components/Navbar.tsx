@@ -6,8 +6,7 @@ import { usePathname } from "next/navigation";
 import { User, LogOut, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
-// Import authClient when available, for now mocked
-// import { useSession, signOut } from "@/lib/auth-client";
+import { useSession, signOut } from "@/lib/auth-client";
 
 const categories = [
   { name: "চাল", icon: "🍚", slug: "chal" },
@@ -22,8 +21,7 @@ const categories = [
 
 export function Navbar() {
   const pathname = usePathname();
-  // const { data: session } = useSession();
-  const session = null; // Mock session for now
+  const { data: session } = useSession();
 
   // Bengali Date formatting
   const [banglaDate, setBanglaDate] = useState("");
@@ -51,14 +49,37 @@ export function Navbar() {
 
             {/* Auth Buttons */}
             <div className="flex items-center gap-4 flex-shrink-0">
-              {session ? (
+              {session?.user ? (
                 <div className="relative group cursor-pointer">
-                  <div className="flex items-center gap-2 px-3 py-1.5 hover:bg-gray-50 rounded-full transition-colors">
-                    <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
-                      <Image src="https://ui-avatars.com/api/?name=Rezwan&background=random" alt="Avatar" width={32} height={32} />
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-xl bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0 border border-gray-200">
+                      {session.user.image ? (
+                        <img src={session.user.image} alt="Avatar" width={32} height={32} className="w-full h-full object-cover" />
+                      ) : (
+                        <User className="w-5 h-5 text-gray-500" />
+                      )}
                     </div>
-                    <span className="text-sm font-medium text-gray-700 hidden sm:block">Rezwan</span>
-                    <ChevronDown className="w-3 h-3 text-gray-400" />
+                    <span className="text-[15px] font-medium text-gray-800 hidden sm:block">{session.user.name || "User"}</span>
+                    <ChevronDown className="w-3 h-3 text-gray-500 mt-0.5" />
+                  </div>
+
+                  {/* Dropdown Menu */}
+                  <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-gray-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] rounded-2xl p-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 translate-y-1 group-hover:translate-y-0">
+                    <div className="px-3 py-2 border-b border-gray-100 mb-1">
+                      <p className="text-[15px] font-semibold text-gray-900 truncate">{session.user.name}</p>
+                      <p className="text-[13px] text-gray-500 truncate mt-0.5">{session.user.email}</p>
+                    </div>
+                    <Link href="/profile" className="flex items-center gap-2 px-3 py-2 text-[14px] text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mt-1">
+                      <User className="w-[18px] h-[18px] text-slate-500" />
+                      <span>আমার প্রোফাইল</span>
+                    </Link>
+                    <button 
+                      onClick={() => signOut()}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-[14px] text-red-600 hover:bg-red-50 rounded-lg transition-colors text-left"
+                    >
+                      <LogOut className="w-[18px] h-[18px]" />
+                      <span>সাইন আউট</span>
+                    </button>
                   </div>
                 </div>
               ) : (
@@ -85,8 +106,8 @@ export function Navbar() {
                   className={cn(
                     "flex items-center gap-1.5 text-[13px] font-medium transition-all duration-200 px-3 py-1.5 rounded-full",
                     isActive
-                      ? "bg-green-50 text-green-700 border border-green-200 shadow-sm"
-                      : "text-gray-600 hover:text-green-700 border border-transparent hover:bg-gray-50"
+                      ? "bg-[#0E8B44] text-white shadow-sm"
+                      : "text-gray-600 hover:text-[#0E8B44] border border-transparent hover:bg-gray-50"
                   )}
                 >
                   <span className="text-sm opacity-80">{cat.icon}</span>
