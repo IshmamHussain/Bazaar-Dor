@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ProductCard } from "@/components/ProductCard";
 import { AllProductsList } from "@/components/AllProductsList";
-import { TrendingUp, TrendingDown } from "lucide-react";
 import { fetchProducts } from "@/lib/api";
 
 interface Product {
@@ -69,9 +68,9 @@ export default async function Home() {
       </section>
 
       <section>
-        <div className="flex items-center gap-2 mb-6">
-          <TrendingUp className="text-red-500 w-6 h-6" />
-          <h2 className="text-xl font-bold text-gray-900">আজ দাম বেড়েছে ▲</h2>
+        <div className="flex items-center gap-2.5 mb-6">
+          <span className="text-[#D92D20] text-sm sm:text-base leading-none select-none">▲</span>
+          <h2 className="text-xl sm:text-2xl font-bold text-[#1D271F]">আজ দাম বেড়েছে</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 xl:gap-6">
           {risers.map((p) => (
@@ -81,9 +80,9 @@ export default async function Home() {
       </section>
 
       <section>
-        <div className="flex items-center gap-2 mb-6">
-          <TrendingDown className="text-green-500 w-6 h-6" />
-          <h2 className="text-xl font-bold text-gray-900">আজ দাম কমেছে ▼</h2>
+        <div className="flex items-center gap-2.5 mb-6">
+          <span className="text-[#05893E] text-sm sm:text-base leading-none select-none">▼</span>
+          <h2 className="text-xl sm:text-2xl font-bold text-[#1D271F]">আজ দাম কমেছে</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 xl:gap-6">
           {fallers.map((p) => (
