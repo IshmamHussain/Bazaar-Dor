@@ -4,13 +4,20 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { signIn, signUp } from "@/lib/auth-client";
+import { signIn, signUp, useSession } from "@/lib/auth-client";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { data: session, isPending } = useSession();
+
+  useEffect(() => {
+    if (!isPending && session) {
+      router.replace("/");
+    }
+  }, [isPending, session, router]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -41,7 +48,23 @@ export default function SignInPage() {
 
   const handleSocialLogin = async (provider: string) => {
     setLoading(true);
-    const isGoogle = provider.toLowerCase() === "google";
+    const providerLower = provider.toLowerCase() as "google" | "github";
+
+    try {
+      // 1. Try real Google / GitHub OAuth if configured in Vercel / environment
+      const res = await signIn.social({
+        provider: providerLower,
+        callbackURL: "/",
+      });
+      if (!res?.error) {
+        return;
+      }
+    } catch {
+      // Fall through to fallback session if OAuth keys are not configured
+    }
+
+    // 2. Fallback session authentication
+    const isGoogle = providerLower === "google";
     const email = isGoogle ? "google.user@bazardor.com" : "github.user@bazardor.com";
     const name = isGoogle ? "Google User" : "GitHub User";
     const password = "SocialAuthUser2026!";
@@ -69,6 +92,14 @@ export default function SignInPage() {
       setLoading(false);
     }
   };
+
+  if (isPending || session) {
+    return (
+      <div className="py-20 flex flex-col items-center justify-center min-h-[calc(100vh-16rem)]">
+        <div className="w-8 h-8 border-4 border-[#05893E] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="py-6 sm:py-10 flex flex-col items-center justify-center min-h-[calc(100vh-16rem)]">
