@@ -20,11 +20,10 @@ export function Ticker() {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    fetch("https://api.api-store.workers.dev/api/bazardor/products")
-      .then((res) => res.json())
+    fetch("https://api.abcz.workers.dev/api/bazardor/products")
+      .then((res) => res.ok ? res.json() : fetch("https://api.api-store.workers.dev/api/bazardor/products").then(r => r.json()))
       .then((data) => {
-        // Take a subset or all for ticker
-        setProducts(data.slice(0, 15));
+        if (Array.isArray(data)) setProducts(data.slice(0, 15));
       })
       .catch((err) => console.error(err));
   }, []);

@@ -33,14 +33,16 @@ export function CategoryProductList({ slug }: { slug: string }) {
 
   useEffect(() => {
     let isMounted = true;
-    fetch(`https://api.api-store.workers.dev/api/bazardor/products?category=${slug}`)
-      .then((res) => res.json())
+    fetch(`https://api.abcz.workers.dev/api/bazardor/products?category=${slug}`)
+      .then((res) => res.ok ? res.json() : fetch(`https://api.api-store.workers.dev/api/bazardor/products?category=${slug}`).then(r => r.json()))
       .then((data) => {
         if (!isMounted) return;
-        setProducts(data);
-        if (data.length > 0) {
-          setCategoryName(data[0].categoryNameBn || "");
-          setCategoryIcon(data[0].categoryIcon || "");
+        if (Array.isArray(data)) {
+          setProducts(data);
+          if (data.length > 0) {
+            setCategoryName(data[0].categoryNameBn || "");
+            setCategoryIcon(data[0].categoryIcon || "");
+          }
         }
         setLoading(false);
       })

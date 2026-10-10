@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { getProductIcon } from "@/lib/utils";
+import { fetchProductById, fetchProducts } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 
@@ -31,32 +32,17 @@ interface ProductDetail {
 async function getProduct(slug: string): Promise<ProductDetail | null> {
   let targetId = slug;
 
-  // If slug is not numeric, find the numeric ID first
   if (!/^\d+$/.test(slug)) {
-    try {
-      const allRes = await fetch("https://api.api-store.workers.dev/api/bazardor/products", {
-        next: { revalidate: 3600 }
-      });
-      if (allRes.ok) {
-        const allProducts = await allRes.json();
-        const found = allProducts.find((p: { slug: string; id: number }) => p.slug === slug || p.id.toString() === slug);
-        if (found) {
-          targetId = found.id.toString();
-        }
-      }
-    } catch (e) {
-      console.error("Error looking up product slug:", e);
+    const allProducts = await fetchProducts();
+    const found = allProducts.find(
+      (p: { slug: string; id: number }) => p.slug === slug || p.id.toString() === slug
+    );
+    if (found) {
+      targetId = found.id.toString();
     }
   }
 
-  const res = await fetch(`https://api.api-store.workers.dev/api/bazardor/products/${targetId}`, {
-    next: { revalidate: 3600 }
-  });
-  if (!res.ok) {
-    if (res.status === 404) return null;
-    throw new Error("Failed to fetch product");
-  }
-  return res.json();
+  return await fetchProductById(targetId);
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {

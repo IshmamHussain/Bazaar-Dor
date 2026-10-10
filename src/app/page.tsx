@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ProductCard } from "@/components/ProductCard";
 import { AllProductsList } from "@/components/AllProductsList";
 import { TrendingUp, TrendingDown } from "lucide-react";
+import { fetchProducts } from "@/lib/api";
 
 interface Product {
   id: number;
@@ -23,16 +24,8 @@ interface Product {
   };
 }
 
-async function getProducts(): Promise<Product[]> {
-  const res = await fetch("https://api.api-store.workers.dev/api/bazardor/products", {
-    next: { revalidate: 3600 }
-  });
-  if (!res.ok) throw new Error("Failed to fetch products");
-  return res.json();
-}
-
 export default async function Home() {
-  const products: Product[] = await getProducts();
+  const products: Product[] = await fetchProducts();
   
   // Sort and filter for risers and fallers
   const risers = [...products]
