@@ -41,12 +41,12 @@ export function Ticker() {
             <div key={`${p.id}-${i}`} className="flex items-center gap-2 text-sm font-medium">
               <span className="text-gray-500">{p.categoryIcon}</span>
               <span className="text-gray-700">{p.nameBn}</span>
-              <span className="text-gray-900">{p.today.toLocaleString('bn-BD')} টাকা/{p.unit === 'kg' ? 'কেজি' : p.unit === 'liter' ? 'লিটার' : p.unit === 'dozen' ? 'ডজন' : 'পিস'}</span>
+              <span className="text-gray-900">{p.today.toLocaleString('bn-BD')} টাকা/{p.unit === 'kg' ? 'কেজি' : (p.unit === 'litre' || p.unit === 'liter') ? 'লিটার' : p.unit === 'dozen' ? 'ডজন' : 'পিস'}</span>
               <span className={cn(
                 "flex items-center text-xs px-1.5 py-0.5 rounded",
-                isUp ? "text-red-600 bg-red-50" : isDown ? "text-green-600 bg-green-50" : "text-gray-500 bg-gray-50"
+                isUp ? "text-green-600 bg-green-50" : isDown ? "text-red-600 bg-red-50" : "text-gray-500 bg-gray-50"
               )}>
-                {isUp ? "▲" : isDown ? "▼" : "—"} {p.change.pct.toLocaleString('bn-BD')}%
+                {isUp ? "▲" : isDown ? "▼" : "—"} {Math.abs(p.change.pct).toLocaleString('bn-BD')}%
               </span>
             </div>
           );

@@ -21,16 +21,22 @@ interface Product {
 export function CategoryProductList({ slug }: { slug: string }) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [prevSlug, setPrevSlug] = useState(slug);
   const [sortOrder, setSortOrder] = useState<"default" | "asc" | "desc">("default");
   const [categoryName, setCategoryName] = useState("");
   const [categoryIcon, setCategoryIcon] = useState("");
 
-  useEffect(() => {
+  if (prevSlug !== slug) {
+    setPrevSlug(slug);
     setLoading(true);
-    // The requirement says /products?category=chal
+  }
+
+  useEffect(() => {
+    let isMounted = true;
     fetch(`https://api.api-store.workers.dev/api/bazardor/products?category=${slug}`)
       .then((res) => res.json())
       .then((data) => {
+        if (!isMounted) return;
         setProducts(data);
         if (data.length > 0) {
           setCategoryName(data[0].categoryNameBn || "");
@@ -39,9 +45,14 @@ export function CategoryProductList({ slug }: { slug: string }) {
         setLoading(false);
       })
       .catch((err) => {
+        if (!isMounted) return;
         console.error(err);
         setLoading(false);
       });
+
+    return () => {
+      isMounted = false;
+    };
   }, [slug]);
 
   if (loading) {
@@ -91,7 +102,7 @@ export function CategoryProductList({ slug }: { slug: string }) {
             <select 
               className="appearance-none bg-white border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded-lg leading-tight focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 text-sm font-medium"
               value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value as any)}
+              onChange={(e) => setSortOrder(e.target.value as "default" | "asc" | "desc")}
             >
               <option value="default">ডিফল্ট</option>
               <option value="asc">দাম: কম থেকে বেশি</option>

@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# database
+*.db
+*.sqlite*
+
+# assignment instructions / reference folder
+B14-A7-Bazar-Dor-main/

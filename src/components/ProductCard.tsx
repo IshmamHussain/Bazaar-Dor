@@ -21,7 +21,7 @@ export function ProductCard({ product }: { product: Product }) {
   const isDown = product.change.dir === "down";
   
   const unitLabel = product.unit === 'kg' ? 'প্রতি কেজি' 
-    : product.unit === 'liter' ? 'প্রতি লিটার' 
+    : (product.unit === 'litre' || product.unit === 'liter') ? 'প্রতি লিটার' 
     : product.unit === 'dozen' ? 'প্রতি ডজন' 
     : 'প্রতি পিস';
 
@@ -50,9 +50,9 @@ export function ProductCard({ product }: { product: Product }) {
         
         <div className={cn(
           "flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-md",
-          isUp ? "text-red-600 bg-red-50" : isDown ? "text-green-600 bg-green-50" : "text-gray-500 bg-gray-50"
+          isUp ? "text-green-600 bg-green-50" : isDown ? "text-red-600 bg-red-50" : "text-gray-500 bg-gray-50"
         )}>
-          {isUp ? "▲" : isDown ? "▼" : "—"} {product.change.pct.toLocaleString('bn-BD')}%
+          {isUp ? "▲" : isDown ? "▼" : "—"} {Math.abs(product.change.pct).toLocaleString('bn-BD')}%
         </div>
       </div>
     </Link>

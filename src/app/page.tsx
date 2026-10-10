@@ -3,7 +3,26 @@ import Link from "next/link";
 import { ProductCard } from "@/components/ProductCard";
 import { TrendingUp, TrendingDown, Grid3X3 } from "lucide-react";
 
-async function getProducts() {
+interface Product {
+  id: number;
+  slug: string;
+  nameBn: string;
+  category: string;
+  categoryNameBn: string;
+  categoryIcon: string;
+  unit: string;
+  image: string;
+  today: number;
+  yesterday: number;
+  lastWeek: number;
+  lastMonth: number;
+  change: {
+    dir: "up" | "down" | "flat";
+    pct: number;
+  };
+}
+
+async function getProducts(): Promise<Product[]> {
   const res = await fetch("https://api.api-store.workers.dev/api/bazardor/products", {
     next: { revalidate: 3600 }
   });
@@ -12,7 +31,7 @@ async function getProducts() {
 }
 
 export default async function Home() {
-  const products: any[] = await getProducts();
+  const products: Product[] = await getProducts();
   
   // Sort and filter for risers and fallers
   const risers = [...products]
@@ -22,7 +41,7 @@ export default async function Home() {
     
   const fallers = [...products]
     .filter((p) => p.change.dir === "down")
-    .sort((a, b) => b.change.pct - a.change.pct)
+    .sort((a, b) => Math.abs(b.change.pct) - Math.abs(a.change.pct))
     .slice(0, 6);
 
   return (
@@ -39,7 +58,7 @@ export default async function Home() {
           <p className="text-gray-500 text-[1.05rem] leading-relaxed mb-8">
             চাল, ডাল, তেল, সবজি, মাছ, মাংস, ডিম ও মসলার দাম — বাজারভিত্তিক বিস্তারিত, গড়, সর্বনিম্ন-সর্বাধিক এবং দামের পরিবর্তন এক জায়গায়।
           </p>
-          <Link href="#all-products" className="btn-primary inline-block">
+          <Link href="#সব-পণ্য" className="btn-primary inline-block">
             সব পণ্য দেখুন
           </Link>
         </div>
@@ -61,7 +80,7 @@ export default async function Home() {
       <section>
         <div className="flex items-center gap-2 mb-6">
           <TrendingUp className="text-red-500 w-6 h-6" />
-          <h2 className="text-xl font-bold text-gray-900">আজ দাম বেড়েছে</h2>
+          <h2 className="text-xl font-bold text-gray-900">আজ দাম বেড়েছে ▲</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 xl:gap-6">
           {risers.map((p) => (
@@ -74,7 +93,7 @@ export default async function Home() {
       <section>
         <div className="flex items-center gap-2 mb-6">
           <TrendingDown className="text-green-500 w-6 h-6" />
-          <h2 className="text-xl font-bold text-gray-900">আজ দাম কমেছে</h2>
+          <h2 className="text-xl font-bold text-gray-900">আজ দাম কমেছে ▼</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 xl:gap-6">
           {fallers.map((p) => (
@@ -84,16 +103,22 @@ export default async function Home() {
       </section>
 
       {/* All Products Section */}
-      <section id="all-products" className="scroll-mt-24">
-        <div className="flex items-center justify-between mb-6 border-b border-gray-200 pb-4">
-          <div className="flex items-center gap-2">
-            <Grid3X3 className="text-gray-500 w-6 h-6" />
-            <h2 className="text-xl font-bold text-gray-900">সব পণ্য</h2>
+      <section id="সব-পণ্য" className="scroll-mt-24">
+        <div id="all-products" />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 border-b border-gray-200 pb-4 gap-2">
+          <div>
+            <div className="flex items-center gap-2">
+              <Grid3X3 className="text-gray-500 w-6 h-6" />
+              <h2 className="text-xl font-bold text-gray-900">সব পণ্য</h2>
+            </div>
+            <p className="text-sm text-gray-500 mt-1">
+              নিত্যপ্রয়োজনীয় সকল পণ্যের বর্তমান বাজার দর
+            </p>
           </div>
           <span className="text-sm text-gray-500">{products.length} টি পণ্য পাওয়া গেছে</span>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 xl:gap-6">
-          {products.map((p: any) => (
+          {products.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}
         </div>
