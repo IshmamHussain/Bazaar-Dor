@@ -56,37 +56,19 @@ export default function SignUpPage() {
         provider: providerLower,
         callbackURL: "/",
       });
-      if (!res?.error) {
+
+      if (res?.data?.url) {
+        window.location.href = res.data.url;
         return;
       }
-    } catch {
-    }
 
-    const isGoogle = providerLower === "google";
-    const email = isGoogle ? "google.user@bazardor.com" : "github.user@bazardor.com";
-    const name = isGoogle ? "Google User" : "GitHub User";
-    const password = "SocialAuthUser2026!";
-
-    try {
-      const signInRes = await signIn.email({ email, password });
-      if (signInRes?.error) {
-        const signUpRes = await signUp.email({ name, email, password });
-        if (signUpRes?.error) {
-          const retry = await signIn.email({ email, password });
-          if (retry?.error) {
-            toast.error(`${provider} দিয়ে সাইন আপ ব্যর্থ হয়েছে`);
-            setLoading(false);
-            return;
-          }
-        } else {
-          await signIn.email({ email, password });
-        }
+      if (res?.error) {
+        toast.error(res.error.message || `${provider} সাইন ইন ব্যর্থ হয়েছে`);
+        setLoading(false);
       }
-
-      toast.success(`${provider} দিয়ে সফলভাবে সাইন ইন হয়েছে!`);
-      window.location.href = "/";
-    } catch {
-      toast.error(`${provider} দিয়ে সাইন ইন ব্যর্থ হয়েছে`);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : `${provider} সাইন ইন ব্যর্থ হয়েছে`;
+      toast.error(message);
       setLoading(false);
     }
   };
