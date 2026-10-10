@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ProductCard } from "@/components/ProductCard";
-import { TrendingUp, TrendingDown, Grid3X3 } from "lucide-react";
+import { AllProductsList } from "@/components/AllProductsList";
+import { TrendingUp, TrendingDown } from "lucide-react";
 
 interface Product {
   id: number;
@@ -102,27 +103,8 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* All Products Section */}
-      <section id="সব-পণ্য" className="scroll-mt-24">
-        <div id="all-products" />
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 border-b border-gray-200 pb-4 gap-2">
-          <div>
-            <div className="flex items-center gap-2">
-              <Grid3X3 className="text-gray-500 w-6 h-6" />
-              <h2 className="text-xl font-bold text-gray-900">সব পণ্য</h2>
-            </div>
-            <p className="text-sm text-gray-500 mt-1">
-              নিত্যপ্রয়োজনীয় সকল পণ্যের বর্তমান বাজার দর
-            </p>
-          </div>
-          <span className="text-sm text-gray-500">{products.length} টি পণ্য পাওয়া গেছে</span>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 xl:gap-6">
-          {products.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
-      </section>
+      {/* All Products Section with Sort dropdown */}
+      <AllProductsList initialProducts={products} />
     </div>
   );
 }

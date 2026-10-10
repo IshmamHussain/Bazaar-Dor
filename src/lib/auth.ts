@@ -1,8 +1,13 @@
 import { betterAuth } from "better-auth";
-import Database from "better-sqlite3";
+import { mongodbAdapter } from "@better-auth/mongo-adapter";
+import client from "./mongodb";
+
+const db = client.db(process.env.MONGODB_DB_NAME || "bazardor");
 
 export const auth = betterAuth({
-  database: new Database("bazardor.db"),
+  database: mongodbAdapter(db, {
+    client,
+  }),
   emailAndPassword: {
     enabled: true,
   },

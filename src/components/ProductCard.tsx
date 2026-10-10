@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { cn, getProductIcon } from "@/lib/utils";
 
 interface Product {
   id: number;
@@ -25,6 +25,8 @@ export function ProductCard({ product }: { product: Product }) {
     : product.unit === 'dozen' ? 'প্রতি ডজন' 
     : 'প্রতি পিস';
 
+  const icon = getProductIcon(product.slug || product.nameBn, product.categoryIcon);
+
   return (
     <Link 
       href={`/product/${product.slug}`}
@@ -32,7 +34,7 @@ export function ProductCard({ product }: { product: Product }) {
     >
       <div className="flex gap-4 items-start mb-4">
         <div className="w-12 h-12 flex items-center justify-center bg-gray-50 rounded-xl text-2xl border border-gray-100">
-          {product.categoryIcon}
+          {icon}
         </div>
         <div>
           <h3 className="font-semibold text-gray-900 text-lg leading-tight">{product.nameBn}</h3>
@@ -49,10 +51,11 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
         
         <div className={cn(
-          "flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-md",
-          isUp ? "text-green-600 bg-green-50" : isDown ? "text-red-600 bg-red-50" : "text-gray-500 bg-gray-50"
+          "inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-lg tracking-normal",
+          isUp ? "text-green-700 bg-green-50 border border-green-200/60" : isDown ? "text-red-700 bg-red-50 border border-red-200/60" : "text-gray-600 bg-gray-50 border border-gray-200/60"
         )}>
-          {isUp ? "▲" : isDown ? "▼" : "—"} {Math.abs(product.change.pct).toLocaleString('bn-BD')}%
+          <span className="text-[10px] leading-none">{isUp ? "▲" : isDown ? "▼" : "—"}</span>
+          <span className="font-semibold">{Math.abs(product.change.pct).toLocaleString('bn-BD')}%</span>
         </div>
       </div>
     </Link>

@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
+import { getProductIcon } from "@/lib/utils";
 
 interface Market {
   market: string;
@@ -89,7 +90,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-8">
         <div className="flex flex-col sm:flex-row gap-5 sm:gap-6 items-start sm:items-center">
           <div className="w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 flex items-center justify-center bg-gray-50 rounded-2xl text-3xl sm:text-4xl border border-gray-100 shadow-inner">
-            {product.categoryIcon}
+            {getProductIcon(product.slug || product.nameBn, product.categoryIcon)}
           </div>
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1.5">{product.nameBn}</h1>
@@ -112,8 +113,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <p className="text-2xl sm:text-3xl font-bold text-gray-900">
             {product.today.toLocaleString('bn-BD')} <span className="text-lg font-normal">টাকা</span>
           </p>
-          <div className={`mt-2 inline-flex items-center gap-1 text-sm font-medium px-2.5 py-1 rounded-md w-fit ${isUp ? "text-green-600 bg-green-50" : isDown ? "text-red-600 bg-red-50" : "text-gray-500 bg-gray-50"}`}>
-            {isUp ? "▲" : isDown ? "▼" : "—"} {Math.abs(product.change.pct).toLocaleString('bn-BD')}%
+          <div className={`mt-2 inline-flex items-center gap-1.5 text-sm font-bold px-3 py-1 rounded-lg w-fit ${isUp ? "text-green-700 bg-green-50 border border-green-200/60" : isDown ? "text-red-700 bg-red-50 border border-red-200/60" : "text-gray-600 bg-gray-50 border border-gray-200/60"}`}>
+            <span className="text-xs leading-none">{isUp ? "▲" : isDown ? "▼" : "—"}</span>
+            <span className="font-semibold">{Math.abs(product.change.pct).toLocaleString('bn-BD')}%</span>
           </div>
         </div>
       </div>
