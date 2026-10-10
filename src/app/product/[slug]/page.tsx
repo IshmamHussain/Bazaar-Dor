@@ -46,7 +46,6 @@ async function getProduct(slug: string): Promise<ProductDetail | null> {
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
-  // Protected Route — requires login
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -74,7 +73,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   return (
     <div className="max-w-4xl mx-auto min-h-screen">
-      {/* Top Summary */}
       <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-8">
         <div className="flex flex-col sm:flex-row gap-5 sm:gap-6 items-start sm:items-center">
           <div className="w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 flex items-center justify-center bg-gray-50 rounded-2xl text-3xl sm:text-4xl border border-gray-100 shadow-inner">
@@ -108,7 +106,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         </div>
       </div>
 
-      {/* Price Summary */}
       <div className="mb-8">
         <h2 className="text-lg font-bold text-gray-900 mb-4">দামের সারসংক্ষেপ</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -130,7 +127,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         </div>
       </div>
 
-      {/* Markets Table */}
       <div>
         <h2 className="text-lg font-bold text-gray-900 mb-4">বাজারভিত্তিক আজকের দাম</h2>
         <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">

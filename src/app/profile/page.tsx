@@ -11,7 +11,6 @@ export default function ProfilePage() {
   const { data: session, isPending } = useSession();
   const router = useRouter();
 
-  // If not authenticated, redirect to signin
   useEffect(() => {
     if (!isPending && !session) {
       router.replace("/signin");
@@ -41,7 +40,6 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-[640px] mx-auto py-10 px-4 min-h-[calc(100vh-16rem)]">
-      {/* Header outside cards */}
       <div className="mb-6">
         <h1 className="text-2xl sm:text-[1.75rem] font-bold text-gray-900 tracking-tight mb-1">
           আমার প্রোফাইল
@@ -51,12 +49,10 @@ export default function ProfilePage() {
         </p>
       </div>
 
-      {/* Top Card: User Info & Sign Out */}
       <div className="bg-white rounded-[22px] border border-gray-100 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6 mb-5 flex items-center justify-between gap-4">
         <div className="flex items-center gap-4 min-w-0">
           <div className="w-16 h-16 rounded-2xl bg-gray-100 border border-gray-200/80 flex items-center justify-center overflow-hidden flex-shrink-0 text-gray-400">
             {user?.image ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 src={user.image}
                 alt={user.name || "Avatar"}
@@ -87,7 +83,6 @@ export default function ProfilePage() {
         </button>
       </div>
 
-      {/* Action Card */}
       <div className="bg-white rounded-[22px] border border-gray-100 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6 sm:p-7">
         <Link
           href="/profile/update"

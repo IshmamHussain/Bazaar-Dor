@@ -22,8 +22,6 @@ const categories = [
 export function Navbar() {
   const pathname = usePathname();
   const { data: session } = useSession();
-
-  // Bengali Date formatting
   const [banglaDate, setBanglaDate] = useState("");
 
   useEffect(() => {
@@ -43,10 +41,8 @@ export function Navbar() {
 
   return (
     <header className="bg-white border-b border-[#E1E8E1] sticky top-0 z-50">
-      {/* Top Row: Logo, Date & User Actions */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-[4.25rem]">
-          {/* Logo & Bengali Date */}
           <Link href="/" className="flex items-center gap-3 group">
             <Image
               src="/logo.png"
@@ -69,14 +65,12 @@ export function Navbar() {
             </div>
           </Link>
 
-          {/* Auth Buttons / Profile */}
           <div className="flex items-center gap-4 flex-shrink-0">
             {session?.user ? (
               <div className="relative group cursor-pointer">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-xl bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0 border border-gray-200">
                     {session.user.image ? (
-                      /* eslint-disable-next-line @next/next/no-img-element */
                       <img
                         src={session.user.image}
                         alt="Avatar"
@@ -94,7 +88,6 @@ export function Navbar() {
                   <ChevronDown className="w-3 h-3 text-gray-500 mt-0.5" />
                 </div>
 
-                {/* Dropdown Menu */}
                 <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-gray-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] rounded-2xl p-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 translate-y-1 group-hover:translate-y-0 z-50">
                   <div className="px-3 py-2 border-b border-gray-100 mb-1">
                     <p className="text-[15px] font-semibold text-gray-900 truncate">
@@ -140,10 +133,8 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Subtle Horizontal Divider */}
       <div className="border-t border-[#F0F5F0]" />
 
-      {/* Bottom Row: Categories */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <nav className="flex items-center gap-6 sm:gap-8 overflow-x-auto scrollbar-none py-2.5 sm:py-3">
           {categories.map((cat) => {
@@ -169,4 +160,3 @@ export function Navbar() {
     </header>
   );
 }
-

@@ -52,7 +52,6 @@ export default function SignUpPage() {
     const providerLower = provider.toLowerCase() as "google" | "github";
 
     try {
-      // 1. Try real Google / GitHub OAuth if configured in Vercel / environment
       const res = await signIn.social({
         provider: providerLower,
         callbackURL: "/",
@@ -61,10 +60,8 @@ export default function SignUpPage() {
         return;
       }
     } catch {
-      // Fall through to fallback session if OAuth keys are not configured
     }
 
-    // 2. Fallback session authentication
     const isGoogle = providerLower === "google";
     const email = isGoogle ? "google.user@bazardor.com" : "github.user@bazardor.com";
     const name = isGoogle ? "Google User" : "GitHub User";
@@ -104,7 +101,6 @@ export default function SignUpPage() {
 
   return (
     <div className="py-6 sm:py-10 flex flex-col items-center justify-center min-h-[calc(100vh-16rem)]">
-      {/* Header outside Card */}
       <div className="text-center mb-8 max-w-md w-full px-4">
         <h1 className="text-3xl sm:text-[2rem] font-bold text-[#1D271F] mb-2 tracking-tight">
           অ্যাকাউন্ট তৈরি করুন
@@ -114,7 +110,6 @@ export default function SignUpPage() {
         </p>
       </div>
 
-      {/* Main Card */}
       <div className="bg-white p-7 sm:p-9 rounded-[28px] border border-[#E1E8E1] shadow-[0_2px_8px_rgba(0,0,0,0.02)] w-full max-w-[430px]">
         <form onSubmit={handleRegister} className="space-y-4">
           <div>
@@ -172,7 +167,6 @@ export default function SignUpPage() {
           </button>
         </form>
 
-        {/* Divider */}
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-[#E1E8E1]" />
@@ -182,7 +176,6 @@ export default function SignUpPage() {
           </div>
         </div>
 
-        {/* Social Logins Side-by-Side */}
         <div className="grid grid-cols-2 gap-3">
           <button 
             type="button"
@@ -210,7 +203,6 @@ export default function SignUpPage() {
           </button>
         </div>
 
-        {/* Sign In Link */}
         <p className="mt-6 text-center text-sm text-[#59665B]">
           আগে থেকে অ্যাকাউন্ট আছে?{" "}
           <Link href="/signin" className="text-[#05893E] font-semibold hover:underline">
@@ -219,7 +211,6 @@ export default function SignUpPage() {
         </p>
       </div>
 
-      {/* Back to Home */}
       <div className="mt-8 text-center">
         <Link 
           href="/" 
@@ -232,4 +223,3 @@ export default function SignUpPage() {
     </div>
   );
 }
-

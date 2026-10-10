@@ -83,11 +83,10 @@ export function CategoryProductList({ slug }: { slug: string }) {
     );
   }
 
-  // Sorting logic (sort by numeric value)
   const sortedProducts = [...products].sort((a, b) => {
     if (sortOrder === "asc") return a.today - b.today;
     if (sortOrder === "desc") return b.today - a.today;
-    return 0; // default
+    return 0;
   });
 
   return (

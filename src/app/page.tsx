@@ -27,7 +27,6 @@ interface Product {
 export default async function Home() {
   const products: Product[] = await fetchProducts();
   
-  // Sort and filter for risers and fallers
   const risers = [...products]
     .filter((p) => p.change.dir === "up")
     .sort((a, b) => b.change.pct - a.change.pct)
@@ -40,7 +39,6 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col gap-16">
-      {/* Hero Section */}
       <section className="bg-white rounded-3xl p-8 md:p-12 border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-8 mt-4 shadow-sm">
         <div className="max-w-xl">
           <div className="inline-block bg-green-50/80 text-green-600 px-4 py-1.5 rounded-full text-sm font-semibold mb-4 border border-green-100">
@@ -70,7 +68,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Risers Section */}
       <section>
         <div className="flex items-center gap-2 mb-6">
           <TrendingUp className="text-red-500 w-6 h-6" />
@@ -83,7 +80,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Fallers Section */}
       <section>
         <div className="flex items-center gap-2 mb-6">
           <TrendingDown className="text-green-500 w-6 h-6" />
@@ -96,7 +92,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* All Products Section with Sort dropdown */}
       <AllProductsList initialProducts={products} />
     </div>
   );

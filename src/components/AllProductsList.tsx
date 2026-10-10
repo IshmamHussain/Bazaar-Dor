@@ -29,7 +29,7 @@ export function AllProductsList({ initialProducts }: { initialProducts: Product[
   const sortedProducts = [...initialProducts].sort((a, b) => {
     if (sortOrder === "asc") return a.today - b.today;
     if (sortOrder === "desc") return b.today - a.today;
-    return a.id - b.id; // default original order
+    return a.id - b.id;
   });
 
   return (

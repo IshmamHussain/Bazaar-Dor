@@ -13,7 +13,6 @@ export default function UpdateProfilePage() {
   const [signingOut, setSigningOut] = useState(false);
   const router = useRouter();
 
-  // If not authenticated, redirect to signin
   useEffect(() => {
     if (!isPending && !session) {
       router.replace("/signin");
@@ -73,7 +72,6 @@ export default function UpdateProfilePage() {
 
   return (
     <div className="max-w-[640px] mx-auto py-10 px-4 min-h-[calc(100vh-16rem)]">
-      {/* Header outside cards */}
       <div className="mb-6">
         <h1 className="text-2xl sm:text-[1.75rem] font-bold text-gray-900 tracking-tight mb-1">
           আমার প্রোফাইল
@@ -83,13 +81,10 @@ export default function UpdateProfilePage() {
         </p>
       </div>
 
-      {/* Top Card: User Info & Sign Out */}
       <div className="bg-white rounded-[22px] border border-gray-100 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6 mb-5 flex items-center justify-between gap-4">
         <div className="flex items-center gap-4 min-w-0">
-          {/* Avatar Box */}
           <div className="w-16 h-16 rounded-2xl bg-gray-100 border border-gray-200/80 flex items-center justify-center overflow-hidden flex-shrink-0 text-gray-400">
             {user?.image ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 src={user.image}
                 alt={user.name || "Avatar"}
@@ -100,7 +95,6 @@ export default function UpdateProfilePage() {
             )}
           </div>
 
-          {/* User Details */}
           <div className="min-w-0">
             <h2 className="text-lg sm:text-xl font-bold text-gray-900 truncate">
               {user.name || "ইউজার"}
@@ -111,7 +105,6 @@ export default function UpdateProfilePage() {
           </div>
         </div>
 
-        {/* Sign Out Button */}
         <button
           type="button"
           onClick={handleSignOut}
@@ -123,7 +116,6 @@ export default function UpdateProfilePage() {
         </button>
       </div>
 
-      {/* Bottom Card: Update Information Form */}
       <div className="bg-white rounded-[22px] border border-gray-100 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6 sm:p-7">
         <h3 className="text-base font-bold text-gray-900 mb-6">
           তথ্য
