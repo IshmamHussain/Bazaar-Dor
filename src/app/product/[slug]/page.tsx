@@ -3,6 +3,8 @@ import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { getProductIcon } from "@/lib/utils";
 
+export const dynamic = "force-dynamic";
+
 interface Market {
   market: string;
   division: string;
