@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { User, LogOut, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSession, signOut } from "@/lib/auth-client";
 
 const categories = [
@@ -23,6 +23,22 @@ export function Navbar() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [banglaDate, setBanglaDate] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -67,8 +83,13 @@ export function Navbar() {
 
           <div className="flex items-center gap-4 flex-shrink-0">
             {session?.user ? (
-              <div className="relative group cursor-pointer">
-                <div className="flex items-center gap-2">
+              <div ref={dropdownRef} className="relative cursor-pointer">
+                <button
+                  type="button"
+                  onClick={() => setDropdownOpen((prev) => !prev)}
+                  className="flex items-center gap-2 focus:outline-none cursor-pointer"
+                  aria-expanded={dropdownOpen}
+                >
                   <div className="w-8 h-8 rounded-xl bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0 border border-gray-200">
                     {session.user.image ? (
                       <img
@@ -85,10 +106,17 @@ export function Navbar() {
                   <span className="text-[15px] font-medium text-gray-800 hidden sm:block">
                     {session.user.name || "User"}
                   </span>
-                  <ChevronDown className="w-3 h-3 text-gray-500 mt-0.5" />
-                </div>
+                  <ChevronDown className={cn("w-3 h-3 text-gray-500 mt-0.5 transition-transform duration-200", dropdownOpen && "rotate-180")} />
+                </button>
 
-                <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-gray-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] rounded-2xl p-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 translate-y-1 group-hover:translate-y-0 z-50">
+                <div
+                  className={cn(
+                    "absolute right-0 top-full mt-2 w-56 bg-white border border-gray-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] rounded-2xl p-2 transition-all duration-200 z-50",
+                    dropdownOpen
+                      ? "opacity-100 visible translate-y-0 pointer-events-auto"
+                      : "opacity-0 invisible translate-y-1 pointer-events-none"
+                  )}
+                >
                   <div className="px-3 py-2 border-b border-gray-100 mb-1">
                     <p className="text-[15px] font-semibold text-gray-900 truncate">
                       {session.user.name}
@@ -99,14 +127,19 @@ export function Navbar() {
                   </div>
                   <Link
                     href="/profile"
+                    onClick={() => setDropdownOpen(false)}
                     className="flex items-center gap-2 px-3 py-2 text-[14px] text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mt-1"
                   >
                     <User className="w-[18px] h-[18px] text-slate-500" />
                     <span>আমার প্রোফাইল</span>
                   </Link>
                   <button
-                    onClick={() => signOut()}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-[14px] text-red-600 hover:bg-red-50 rounded-lg transition-colors text-left"
+                    type="button"
+                    onClick={() => {
+                      setDropdownOpen(false);
+                      signOut();
+                    }}
+                    className="w-full flex items-center gap-2 px-3 py-2 text-[14px] text-red-600 hover:bg-red-50 rounded-lg transition-colors text-left cursor-pointer"
                   >
                     <LogOut className="w-[18px] h-[18px]" />
                     <span>সাইন আউট</span>
