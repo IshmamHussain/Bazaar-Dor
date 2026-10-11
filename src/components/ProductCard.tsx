@@ -52,7 +52,7 @@ export function ProductCard({ product }: { product: Product }) {
         
         <div className={cn(
           "inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-lg tracking-normal",
-          isUp ? "text-green-700 bg-green-50 border border-green-200/60" : isDown ? "text-red-700 bg-red-50 border border-red-200/60" : "text-gray-600 bg-gray-50 border border-gray-200/60"
+          isUp ? "text-red-700 bg-red-50 border border-red-200/60" : isDown ? "text-green-700 bg-green-50 border border-green-200/60" : "text-gray-600 bg-gray-50 border border-gray-200/60"
         )}>
           <span className="text-[10px] leading-none">{isUp ? "▲" : isDown ? "▼" : "—"}</span>
           <span className="font-semibold">{Math.abs(product.change.pct).toLocaleString('bn-BD')}%</span>
