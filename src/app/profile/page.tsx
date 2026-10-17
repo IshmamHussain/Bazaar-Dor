@@ -6,10 +6,12 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { User } from "lucide-react";
 import { useSession, signOut } from "@/lib/auth-client";
+import { useLanguage } from "@/lib/LanguageContext";
 
 export default function ProfilePage() {
   const { data: session, isPending } = useSession();
   const router = useRouter();
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (!isPending && !session) {
@@ -20,11 +22,11 @@ export default function ProfilePage() {
   const handleSignOut = async () => {
     try {
       await signOut();
-      toast.success("সাইন আউট সফল হয়েছে");
+      toast.success(t.toastSignOutSuccess);
       router.replace("/signin");
     } catch (err) {
       console.error("Sign out error:", err);
-      toast.error("সাইন আউট ব্যর্থ হয়েছে");
+      toast.error(t.toastSignOutFailed);
     }
   };
 
@@ -42,10 +44,10 @@ export default function ProfilePage() {
     <div className="max-w-[640px] mx-auto py-10 px-4 min-h-[calc(100vh-16rem)]">
       <div className="mb-6">
         <h1 className="text-2xl sm:text-[1.75rem] font-bold text-gray-900 tracking-tight mb-1">
-          আমার প্রোফাইল
+          {t.profileTitle}
         </h1>
         <p className="text-sm text-gray-500">
-          আপনার অ্যাকাউন্টের তথ্য এখানে দেখুন।
+          {t.profileSubtitle}
         </p>
       </div>
 
@@ -65,7 +67,7 @@ export default function ProfilePage() {
 
           <div className="min-w-0">
             <h2 className="text-lg sm:text-xl font-bold text-gray-900 truncate">
-              {user.name || "ইউজার"}
+              {user.name || t.userDefault}
             </h2>
             <p className="text-sm text-gray-500 truncate mt-0.5">
               {user.email || ""}
@@ -79,7 +81,7 @@ export default function ProfilePage() {
           className="border border-red-200 hover:border-red-300 text-red-600 hover:bg-red-50/60 px-4 py-2 rounded-xl text-sm font-semibold transition-colors flex items-center gap-1.5 flex-shrink-0 cursor-pointer"
         >
           <span>←</span>
-          <span>সাইন আউট</span>
+          <span>{t.signOut}</span>
         </button>
       </div>
 
@@ -88,7 +90,7 @@ export default function ProfilePage() {
           href="/profile/update"
           className="w-full inline-block bg-[#05893E] hover:bg-[#047F39] text-white py-3.5 rounded-xl font-bold text-sm sm:text-base text-center shadow-[0_3px_10px_rgba(5,137,62,0.25)] hover:shadow-[0_5px_15px_rgba(5,137,62,0.3)] transition-all cursor-pointer"
         >
-          তথ্য আপডেট করুন
+          {t.updateInfo}
         </Link>
       </div>
     </div>

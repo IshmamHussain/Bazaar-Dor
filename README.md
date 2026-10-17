@@ -2,14 +2,6 @@
 
 A modern, high-performance web application to track and compare daily market prices of essential commodities in Bangladesh.
 
----
-
-## 📬 Submission Links
-- **Live Link:** [https://bazaar-dor.vercel.app](https://bazaar-dor.vercel.app) *(or your deployed Vercel URL)*
-- **GitHub Repository Link:** [https://github.com/IshmamHussain/Bazaar-Dor](https://github.com/IshmamHussain/Bazaar-Dor)
-
----
-
 ## 🚀 Technologies Used
 - **Next.js (App Router)** — React framework for server-side rendering, dynamic routing, and fast client navigation.
 - **Tailwind CSS** — Utility-first styling for a clean, modern, and responsive user experience.

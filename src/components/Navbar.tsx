@@ -3,26 +3,28 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { User, LogOut, ChevronDown } from "lucide-react";
+import { User, LogOut, ChevronDown, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState, useEffect, useRef } from "react";
 import { useSession, signOut } from "@/lib/auth-client";
+import { useLanguage } from "@/lib/LanguageContext";
 
 const categories = [
-  { name: "চাল", icon: "🍚", slug: "chal" },
-  { name: "ডাল", icon: "🫘", slug: "dal" },
-  { name: "তেল", icon: "🥫", slug: "tel" },
-  { name: "সবজি", icon: "🥬", slug: "sobji" },
-  { name: "মাছ", icon: "🐟", slug: "mach" },
-  { name: "মাংস", icon: "🍗", slug: "mangsho" },
-  { name: "ডিম-দুধ", icon: "🥛", slug: "dim-dui" },
-  { name: "মসলা", icon: "🌶️", slug: "mosla" },
+  { icon: "🍚", slug: "chal" },
+  { icon: "🫘", slug: "dal" },
+  { icon: "🥫", slug: "tel" },
+  { icon: "🥬", slug: "sobji" },
+  { icon: "🐟", slug: "mach" },
+  { icon: "🍗", slug: "mangsho" },
+  { icon: "🥛", slug: "dim-dui" },
+  { icon: "🌶️", slug: "mosla" },
 ];
 
 export function Navbar() {
   const pathname = usePathname();
   const { data: session } = useSession();
-  const [banglaDate, setBanglaDate] = useState("");
+  const { language, toggleLanguage, t, translateCategory, formatDate } = useLanguage();
+  const [currentDate, setCurrentDate] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -41,19 +43,8 @@ export function Navbar() {
   }, []);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const today = new Date();
-      const options: Intl.DateTimeFormatOptions = {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      };
-      setBanglaDate(today.toLocaleDateString("bn-BD", options));
-    }, 0);
-
-    return () => clearTimeout(timer);
-  }, []);
+    setCurrentDate(formatDate(new Date()));
+  }, [language, formatDate]);
 
   return (
     <header className="bg-white border-b border-[#E1E8E1] sticky top-0 z-50">
@@ -62,26 +53,43 @@ export function Navbar() {
           <Link href="/" className="flex items-center gap-3 group">
             <Image
               src="/logo.png"
-              alt="বাজার দর"
+              alt="Bazar Dor | বাজার দর"
               width={44}
               height={44}
               className="w-11 h-11 object-contain transition-transform group-hover:scale-105 flex-shrink-0 rounded-2xl"
               priority
             />
             <div className="flex flex-col justify-center">
-              <span className="font-bold text-xl sm:text-2xl text-[#1D271F] tracking-tight leading-tight">
-                বাজার দর
+              <span
+                suppressHydrationWarning
+                className="font-bold text-xl sm:text-2xl text-[#1D271F] tracking-tight leading-tight"
+              >
+                {t.appName}
               </span>
               <span
                 suppressHydrationWarning
                 className="text-xs sm:text-[13px] text-[#59665B] font-normal leading-tight mt-0.5"
               >
-                {banglaDate || "মঙ্গলবার, ৬ অক্টোবর, ২০২৬"}
+                {currentDate || (language === "en" ? "Tuesday, October 6, 2026" : "মঙ্গলবার, ৬ অক্টোবর, ২০২৬")}
               </span>
             </div>
           </Link>
 
-          <div className="flex items-center gap-4 flex-shrink-0">
+          <div className="flex items-center gap-2.5 sm:gap-4 flex-shrink-0">
+            {/* Top Right English / বাংলা Language Switcher */}
+            <button
+              type="button"
+              onClick={toggleLanguage}
+              id="language-toggle-btn"
+              suppressHydrationWarning
+              className="flex items-center gap-1.5 px-3 py-1.5 sm:py-2 rounded-xl border border-gray-200 hover:border-[#05893E] bg-[#FAFCFA] hover:bg-[#F0F5F0] text-[#1D271F] hover:text-[#05893E] text-xs sm:text-sm font-semibold transition-all duration-200 shadow-sm cursor-pointer group"
+              title={language === "bn" ? "Switch to English" : "বাংলায় পরিবর্তন করুন"}
+              aria-label="Toggle language"
+            >
+              <Globe className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#05893E] transition-transform group-hover:scale-110" />
+              <span suppressHydrationWarning>{language === "bn" ? "English" : "বাংলা"}</span>
+            </button>
+
             {session?.user ? (
               <div ref={dropdownRef} className="relative cursor-pointer">
                 <button
@@ -104,7 +112,7 @@ export function Navbar() {
                     )}
                   </div>
                   <span className="text-[15px] font-medium text-gray-800 hidden sm:block">
-                    {session.user.name || "User"}
+                    {session.user.name || t.userDefault}
                   </span>
                   <ChevronDown className={cn("w-3 h-3 text-gray-500 mt-0.5 transition-transform duration-200", dropdownOpen && "rotate-180")} />
                 </button>
@@ -131,7 +139,7 @@ export function Navbar() {
                     className="flex items-center gap-2 px-3 py-2 text-[14px] text-gray-700 hover:bg-gray-50 rounded-lg transition-colors mt-1"
                   >
                     <User className="w-[18px] h-[18px] text-slate-500" />
-                    <span>আমার প্রোফাইল</span>
+                    <span>{t.myProfile}</span>
                   </Link>
                   <button
                     type="button"
@@ -142,23 +150,23 @@ export function Navbar() {
                     className="w-full flex items-center gap-2 px-3 py-2 text-[14px] text-red-600 hover:bg-red-50 rounded-lg transition-colors text-left cursor-pointer"
                   >
                     <LogOut className="w-[18px] h-[18px]" />
-                    <span>সাইন আউট</span>
+                    <span>{t.signOut}</span>
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <Link
                   href="/signin"
                   className="text-sm font-semibold text-gray-700 hover:text-[#05893E] transition-colors px-2 py-1"
                 >
-                  সাইন ইন
+                  {t.signIn}
                 </Link>
                 <Link
                   href="/signup"
-                  className="bg-[#05893E] hover:bg-[#047F39] text-white text-sm font-medium px-4 py-2 rounded-xl transition-colors shadow-sm"
+                  className="bg-[#05893E] hover:bg-[#047F39] text-white text-sm font-medium px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-colors shadow-sm"
                 >
-                  সাইন আপ
+                  {t.signUp}
                 </Link>
               </div>
             )}
@@ -172,6 +180,7 @@ export function Navbar() {
         <nav className="flex items-center gap-6 sm:gap-8 overflow-x-auto scrollbar-none py-2.5 sm:py-3">
           {categories.map((cat) => {
             const isActive = pathname === `/category/${cat.slug}`;
+            const catName = translateCategory(cat.slug);
             return (
               <Link
                 key={cat.slug}
@@ -184,7 +193,7 @@ export function Navbar() {
                 )}
               >
                 <span className="text-base sm:text-[17px] leading-none">{cat.icon}</span>
-                <span className="leading-none">{cat.name}</span>
+                <span suppressHydrationWarning className="leading-none">{catName}</span>
               </Link>
             );
           })}

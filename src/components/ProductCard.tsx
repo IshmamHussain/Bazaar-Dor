@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { cn, getProductIcon } from "@/lib/utils";
+import { useLanguage } from "@/lib/LanguageContext";
 
 interface Product {
   id: number;
@@ -17,14 +18,12 @@ interface Product {
 }
 
 export function ProductCard({ product }: { product: Product }) {
+  const { t, translateProduct, translateUnit, formatNumber, formatPercent } = useLanguage();
   const isUp = product.change.dir === "up";
   const isDown = product.change.dir === "down";
   
-  const unitLabel = product.unit === 'kg' ? 'প্রতি কেজি' 
-    : (product.unit === 'litre' || product.unit === 'liter') ? 'প্রতি লিটার' 
-    : product.unit === 'dozen' ? 'প্রতি ডজন' 
-    : 'প্রতি পিস';
-
+  const unitLabel = translateUnit(product.unit, true);
+  const productName = translateProduct(product);
   const icon = getProductIcon(product.slug || product.nameBn, product.categoryIcon);
 
   return (
@@ -37,16 +36,16 @@ export function ProductCard({ product }: { product: Product }) {
           {icon}
         </div>
         <div>
-          <h3 className="font-semibold text-gray-900 text-lg leading-tight">{product.nameBn}</h3>
+          <h3 className="font-semibold text-gray-900 text-lg leading-tight">{productName}</h3>
           <p className="text-sm text-gray-500 mt-0.5">{unitLabel}</p>
         </div>
       </div>
       
       <div className="flex items-end justify-between mt-6">
         <div>
-          <p className="text-xs text-gray-400 mb-1">আজকের দাম</p>
+          <p className="text-xs text-gray-400 mb-1">{t.todayPrice}</p>
           <p className="font-bold text-gray-900 text-xl">
-            {product.today.toLocaleString('bn-BD')} <span className="text-base font-normal">টাকা</span>
+            {formatNumber(product.today)} <span className="text-base font-normal">{t.currency}</span>
           </p>
         </div>
         
@@ -55,7 +54,7 @@ export function ProductCard({ product }: { product: Product }) {
           isUp ? "text-red-700 bg-red-50 border border-red-200/60" : isDown ? "text-green-700 bg-green-50 border border-green-200/60" : "text-gray-600 bg-gray-50 border border-gray-200/60"
         )}>
           <span className="text-[10px] leading-none">{isUp ? "▲" : isDown ? "▼" : "—"}</span>
-          <span className="font-semibold">{Math.abs(product.change.pct).toLocaleString('bn-BD')}%</span>
+          <span className="font-semibold">{formatPercent(product.change.pct)}</span>
         </div>
       </div>
     </Link>

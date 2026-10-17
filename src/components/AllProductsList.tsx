@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ProductCard } from "@/components/ProductCard";
 import { ChevronDown, Grid3X3 } from "lucide-react";
+import { useLanguage } from "@/lib/LanguageContext";
 
 interface Product {
   id: number;
@@ -25,6 +26,7 @@ interface Product {
 
 export function AllProductsList({ initialProducts }: { initialProducts: Product[] }) {
   const [sortOrder, setSortOrder] = useState<"default" | "asc" | "desc">("default");
+  const { t } = useLanguage();
 
   const sortedProducts = [...initialProducts].sort((a, b) => {
     if (sortOrder === "asc") return a.today - b.today;
@@ -39,29 +41,29 @@ export function AllProductsList({ initialProducts }: { initialProducts: Product[
         <div>
           <div className="flex items-center gap-2">
             <Grid3X3 className="text-gray-500 w-6 h-6" />
-            <h2 className="text-xl font-bold text-gray-900">সব পণ্য</h2>
+            <h2 className="text-xl font-bold text-gray-900">{t.allProductsTitle}</h2>
           </div>
           <p className="text-sm text-gray-500 mt-1">
-            নিত্যপ্রয়োজনীয় সকল পণ্যের বর্তমান বাজার দর
+            {t.allProductsSubtitle}
           </p>
         </div>
 
         <div className="flex items-center gap-4">
           <span className="text-sm text-gray-500 hidden sm:inline">
-            {initialProducts.length} টি পণ্য পাওয়া গেছে
+            {t.productsFound(initialProducts.length)}
           </span>
 
           <div className="relative">
-            <label className="text-sm text-gray-500 mr-2">সাজান:</label>
+            <label className="text-sm text-gray-500 mr-2">{t.sortLabel}</label>
             <div className="inline-block relative">
               <select
                 className="appearance-none bg-white border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded-lg leading-tight focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 text-sm font-medium cursor-pointer"
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value as "default" | "asc" | "desc")}
               >
-                <option value="default">ডিফল্ট</option>
-                <option value="asc">দাম: কম থেকে বেশি</option>
-                <option value="desc">দাম: বেশি থেকে কম</option>
+                <option value="default">{t.sortDefault}</option>
+                <option value="asc">{t.sortAsc}</option>
+                <option value="desc">{t.sortDesc}</option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
                 <ChevronDown className="w-4 h-4" />

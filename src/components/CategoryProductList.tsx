@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ProductCard } from "@/components/ProductCard";
 import Link from "next/link";
 import { ChevronDown } from "lucide-react";
+import { useLanguage } from "@/lib/LanguageContext";
 
 interface Product {
   id: number;
@@ -25,6 +26,7 @@ export function CategoryProductList({ slug }: { slug: string }) {
   const [sortOrder, setSortOrder] = useState<"default" | "asc" | "desc">("default");
   const [categoryName, setCategoryName] = useState("");
   const [categoryIcon, setCategoryIcon] = useState("");
+  const { t, translateCategory } = useLanguage();
 
   if (prevSlug !== slug) {
     setPrevSlug(slug);
@@ -74,14 +76,16 @@ export function CategoryProductList({ slug }: { slug: string }) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <div className="text-6xl mb-4">🛒</div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">কোনো পণ্য পাওয়া যায়নি</h2>
-        <p className="text-gray-500 mb-8">আপনি যে ক্যাটাগরিটি খুঁজছেন তাতে কোনো পণ্য নেই বা এটি ভুল।</p>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">{t.noProductsTitle}</h2>
+        <p className="text-gray-500 mb-8">{t.noProductsDesc}</p>
         <Link href="/" className="btn-primary">
-          হোম পেজে ফিরে যান
+          {t.backToHome}
         </Link>
       </div>
     );
   }
+
+  const displayCategoryName = translateCategory(slug) || categoryName;
 
   const sortedProducts = [...products].sort((a, b) => {
     if (sortOrder === "asc") return a.today - b.today;
@@ -94,20 +98,20 @@ export function CategoryProductList({ slug }: { slug: string }) {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 pb-4 border-b border-gray-200 gap-4">
         <div className="flex items-center gap-2">
           <span className="text-3xl">{categoryIcon}</span>
-          <h1 className="text-2xl font-bold text-gray-900">{categoryName}</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{displayCategoryName}</h1>
         </div>
         
         <div className="relative">
-          <label className="text-sm text-gray-500 mr-2">সাজান:</label>
+          <label className="text-sm text-gray-500 mr-2">{t.sortLabel}</label>
           <div className="inline-block relative">
             <select 
               className="appearance-none bg-white border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded-lg leading-tight focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 text-sm font-medium"
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value as "default" | "asc" | "desc")}
             >
-              <option value="default">ডিফল্ট</option>
-              <option value="asc">দাম: কম থেকে বেশি</option>
-              <option value="desc">দাম: বেশি থেকে কম</option>
+              <option value="default">{t.sortDefault}</option>
+              <option value="asc">{t.sortAsc}</option>
+              <option value="desc">{t.sortDesc}</option>
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
               <ChevronDown className="w-4 h-4" />

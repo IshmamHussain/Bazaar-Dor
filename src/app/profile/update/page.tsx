@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { User } from "lucide-react";
 import { useSession, authClient, signOut } from "@/lib/auth-client";
+import { useLanguage } from "@/lib/LanguageContext";
 
 export default function UpdateProfilePage() {
   const { data: session, isPending } = useSession();
@@ -12,6 +13,7 @@ export default function UpdateProfilePage() {
   const [loading, setLoading] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const router = useRouter();
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (!isPending && !session) {
@@ -24,7 +26,7 @@ export default function UpdateProfilePage() {
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!currentName.trim()) {
-      toast.error("নাম খালি রাখা যাবে না");
+      toast.error(t.toastNameEmpty);
       return;
     }
 
@@ -34,13 +36,13 @@ export default function UpdateProfilePage() {
         name: currentName.trim(),
       });
       if (res?.error) {
-        toast.error(res.error.message || "আপডেট ব্যর্থ হয়েছে");
+        toast.error(res.error.message || t.toastProfileError);
       } else {
-        toast.success("প্রোফাইল তথ্য সফলভাবে আপডেট হয়েছে!");
+        toast.success(t.toastProfileSuccess);
       }
     } catch (err: unknown) {
       console.error("Update error:", err);
-      toast.error("আপডেট করার সময় ত্রুটি হয়েছে");
+      toast.error(t.toastProfileError);
     } finally {
       setLoading(false);
     }
@@ -50,11 +52,11 @@ export default function UpdateProfilePage() {
     setSigningOut(true);
     try {
       await signOut();
-      toast.success("সাইন আউট সফল হয়েছে");
+      toast.success(t.toastSignOutSuccess);
       router.replace("/signin");
     } catch (err) {
       console.error("Sign out error:", err);
-      toast.error("সাইন আউট ব্যর্থ হয়েছে");
+      toast.error(t.toastSignOutFailed);
     } finally {
       setSigningOut(false);
     }
@@ -74,10 +76,10 @@ export default function UpdateProfilePage() {
     <div className="max-w-[640px] mx-auto py-10 px-4 min-h-[calc(100vh-16rem)]">
       <div className="mb-6">
         <h1 className="text-2xl sm:text-[1.75rem] font-bold text-gray-900 tracking-tight mb-1">
-          আমার প্রোফাইল
+          {t.profileTitle}
         </h1>
         <p className="text-sm text-gray-500">
-          আপনার অ্যাকাউন্টের তথ্য এখানে দেখুন।
+          {t.profileSubtitle}
         </p>
       </div>
 
@@ -97,7 +99,7 @@ export default function UpdateProfilePage() {
 
           <div className="min-w-0">
             <h2 className="text-lg sm:text-xl font-bold text-gray-900 truncate">
-              {user.name || "ইউজার"}
+              {user.name || t.userDefault}
             </h2>
             <p className="text-sm text-gray-500 truncate mt-0.5">
               {user.email || ""}
@@ -112,19 +114,19 @@ export default function UpdateProfilePage() {
           className="border border-red-200 hover:border-red-300 text-red-600 hover:bg-red-50/60 px-4 py-2 rounded-xl text-sm font-semibold transition-colors flex items-center gap-1.5 flex-shrink-0 cursor-pointer"
         >
           <span>←</span>
-          <span>{signingOut ? "অপেক্ষা করুন..." : "সাইন আউট"}</span>
+          <span>{signingOut ? t.pleaseWait : t.signOut}</span>
         </button>
       </div>
 
       <div className="bg-white rounded-[22px] border border-gray-100 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6 sm:p-7">
         <h3 className="text-base font-bold text-gray-900 mb-6">
-          তথ্য
+          {t.infoTitle}
         </h3>
 
         <form onSubmit={handleUpdate} className="space-y-5">
           <div>
             <label className="block text-xs font-semibold text-gray-700 mb-2">
-              নাম
+              {t.labelName}
             </label>
             <input
               type="text"
@@ -132,7 +134,7 @@ export default function UpdateProfilePage() {
               value={currentName}
               onChange={(e) => setName(e.target.value)}
               className="w-full px-4 py-3 bg-[#FAFCFA] border border-gray-200 rounded-xl text-sm sm:text-[15px] text-gray-900 placeholder:text-gray-400 focus:bg-white focus:outline-none focus:border-[#05893E] focus:ring-1 focus:ring-[#05893E] transition-all"
-              placeholder="আপনার নাম লিখুন"
+              placeholder={t.placeholderName}
             />
           </div>
 
@@ -144,7 +146,7 @@ export default function UpdateProfilePage() {
             {loading ? (
               <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
             ) : (
-              "আপডেট"
+              t.updateBtn
             )}
           </button>
         </form>
